@@ -1,22 +1,24 @@
 ﻿"`n"
 $pArray = @()
-$printers = Get-Printer
+$printers = Get-Printer \\mdlfps01*
 foreach ($p in $printers)
     {
-        if($p.ComputerName -eq "mdlfps01")
+        if($p.ComputerName -Match "mdlfps")
             {
                 $name = $p.Name
                 $date = Get-Date
                 Write-Host "Removing $name from $ENV:COMPUTERNAME" -ForegroundColor Yellow
-                #Remove-Printer $p
-
                 $obj = New-Object -TypeName psobject
                 $obj | Add-Member -MemberType NoteProperty -Name Date -Value $date.ToShortDateString()
                 $obj | Add-Member -MemberType NoteProperty -Name PrinterName -Value $name
                 $obj | Add-Member -MemberType NoteProperty -Name Hostname -Value $ENV:COMPUTERNAME
                 $pArray += $obj
+                
             }
+            
     }
+
+$printers = Get-Printer \\mdlfps01* | Remove-Printer
 
 if($pArray.Count -ne 0)
     {
