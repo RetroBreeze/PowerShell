@@ -18,5 +18,13 @@ foreach ($p in $printers)
             }
     }
 
-$pArray | Export-Csv -Path "\\mdlfps01\IT\Printer Removal Log\Printer Removal Log.csv" -Append -NoTypeInformation -Force
-"`nLog saved to \\mdlfps01\IT\Printer Removal Log\Printer Removal Log.csv!"
+if($pArray.Count -ne 0)
+    {
+        $pArray | Export-Csv -Path "\\mdlfps01\IT\Printer Removal Log\Printer Removal Log.csv" -Append -NoTypeInformation -Force
+        $pArray = ''
+        "`nLog saved to \\mdlfps01\IT\Printer Removal Log\Printer Removal Log.csv!"
+    }
+    else
+    {
+        "`nNo printers were found on mdlfps01."
+    }
