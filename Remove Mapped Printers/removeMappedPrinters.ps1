@@ -1,5 +1,10 @@
 ﻿Invoke-Command -ComputerName "mdl365" -ScriptBlock{
 
+printui.exe /dn /n "\\mdlfps01\1301 HP Black White"
+
+}
+
+<#
     $printServ = "mdlfps01"
 
     $sids = Get-ChildItem Registry::HKEY_USERS -Exclude ".Default","*Classes*" | Select-Object Name -ExpandProperty Name
@@ -135,4 +140,4 @@
                     }
                 }
 
-}
+}#>
