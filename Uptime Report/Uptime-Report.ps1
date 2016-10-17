@@ -6,7 +6,7 @@ $body="See attached"
 $from="noreply@mdlogistics.com"
 $server="email.mdlogistics.com"
 
-$computers = Get-ADComputer -Filter 'Name -like "mdl365"' | Where-Object {$_.name -match '[MDL]\d{3}$' -and $_.name -notmatch 'MDL154' -and $_.name -notmatch 'MDL245' }
+$computers = Get-ADComputer -Filter 'Name -like "mdl260"' | Where-Object {$_.name -match '[MDL]\d{3}$' -and $_.name -notmatch 'MDL154' -and $_.name -notmatch 'MDL245' }
 
 #$computers =@('mdl260','mdl365')
 
@@ -48,7 +48,7 @@ $Spreadsheet = foreach($workstation in $Workstations)
 }
 
 
-$Spreadsheet | Sort-Object 'Last Boot Up Time' | Export-Excel -FreezeTopRow -AutoFilter -AutoSize -Path $env:TEMP\uptime.xlsx
+$Spreadsheet | Sort-Object 'Last Boot Up Time' | Export-Excel -FreezeTopRow -AutoFilter -AutoSize -Path C:\Temp\uptime.xlsx
 <#
 #send email
 Send-MailMessage -To 'eratcliff@mdlogistics.com' -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments $env:TEMP\uptime.xlsx
@@ -58,4 +58,4 @@ Send-MailMessage -To 'rdalton@mdlogistics.com' -From $from -Body $body -SmtpServ
 
 #>
 #send email
-Send-MailMessage -To 'sgyll@mdlogistics.com' -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments $env:TEMP\uptime.xlsx
+#Send-MailMessage -To 'sgyll@mdlogistics.com' -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments $env:TEMP\uptime.xlsx
