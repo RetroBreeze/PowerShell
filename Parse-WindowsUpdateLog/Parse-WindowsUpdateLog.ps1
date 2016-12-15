@@ -5,16 +5,16 @@ $body="This is a test of the Windows Update Log script. Please see the attached 
 $from="noreply@mdlogistics.com"
 $server="email.mdlogistics.com"
 
-$path = 'C:\Temp\WindowsUpdateLog.xlsx'
-$computers = Get-ADComputer -Filter 'Name -like "mdl*"' -Properties * | Select-Object name | Where-Object {($_.name -match '[MDL]\d{3}$' -and $_.name -notmatch 'MDL154' -and $_.name -notmatch 'MDL245')}
-#$computers = @('MDL260')
+$path = 'C:\Temp\WindowsUpdateLogAnniversary.xlsx'
+#$computers = Get-ADComputer -Filter 'Name -like "mdl279"' -Properties * | Select-Object name | Where-Object {($_.name -match '[MDL]\d{3}$' -and $_.name -notmatch 'MDL154' -and $_.name -notmatch 'MDL245')}
+$computers = @('MDL365','MDL346','MDL210','MDL269','MDL236','MDL279','MDL359','MDL360')
 $temp = New-Object System.Collections.ArrayList
  
 foreach ($comp in $computers)
 {
 
-if($comp -ne $ENV:COMPUTERNAME){
-$out = Invoke-Command -ComputerName $comp.name -ErrorAction SilentlyContinue -ScriptBlock{
+if($comp.name -ne $ENV:COMPUTERNAME){
+$out = Invoke-Command -ComputerName $comp -ErrorAction SilentlyContinue -ScriptBlock{
 
 $wu = new-object -com “Microsoft.Update.Searcher”
 
@@ -39,6 +39,7 @@ $temp.Clear()
 $temp += $out
 $temp | Where {$_.Date -ne '12/30/1899 12:00:00 AM'} | Sort-Object Date -Descending | Export-Excel $path -WorkSheetname $comp -AutoSize
 
+}
 }
 else
 {

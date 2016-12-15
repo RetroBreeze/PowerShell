@@ -1,7 +1,14 @@
 ﻿Import-Module ImportExcel
 
-$outputFile = 'C:\Users\sgyll\Desktop\dlist.xlsx'
-$deviceImport = Import-CSV -Path 'C:\Temp\deviceList.csv'
+$todaysDate = Get-Date -Format d
+
+$subject="Devices Status Report"
+$body="This is a test of the CheckActiveDevices script."
+$from="noreply@mdlogistics.com"
+$server="email.mdlogistics.com"
+
+$outputFile = ('\\MDLFPS01\PowerShell\Device List\Device Status Report ' + $todaysDate + '.xlsx')
+$deviceImport = Import-CSV -Path '\\MDLFPS01\PowerShell\Device List\DevicesToCheck.csv'
 
 $finalOutput = @{}
 
@@ -112,3 +119,14 @@ $status = ''
 
     } #end switch($devicelocation)
 }#end foreach ($device in $deviceImport)
+
+send email
+Send-MailMessage -To 'sgyll@mdlogistics.com' -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments $outputFile
+<#
+#send email
+Send-MailMessage -To 'rdalton@mdlogistics.com' -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments '\\MDLFPS01\PowerShell\Device List\Offline Device Report.xlsx'
+
+#send email
+Send-MailMessage -To 'eratcliff@mdlogistics.com' -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments '\\MDLFPS01\PowerShell\Device List\Offline Device Report.xlsx'
+#>
+
