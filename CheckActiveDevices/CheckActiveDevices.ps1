@@ -7,17 +7,24 @@ $body="This is a test of the CheckActiveDevices script."
 $from="noreply@mdlogistics.com"
 $server="email.mdlogistics.com"
 
+$query = "SELECT name, type, description, manufacturer, model, ip_address, location FROM devices WHERE manufacturer LIKE 'Cisco'"
+
 $outputFile = ('C:\Temp\Device Status Report.xlsx')
 #$deviceImport = Import-CSV -Path '\\MDLFPS01\PowerShell\Device List\DevicesToCheck.csv'
 
+Write-Host 'Pulling device data using the following query:`n'
+Write-Host -ForegroundColor Yellow "$query"
+
 #Cisco only
-$spiceImport = getSpiceData -query "SELECT name, type, description, manufacturer, model, ip_address, location FROM devices WHERE manufacturer LIKE 'Cisco'"
+$spiceImport = getSpiceData -query $query
 
 $final1301 = @()
 $final700 = @()
 $final2150 = @()
 $finalReno = @()
 $finalUnknown = @()
+
+
 
 $deviceList = foreach ($device in $spiceImport)
 {
@@ -48,7 +55,7 @@ $status = ''
     if($testnet)
     {
         Write-Host "$deviceName is online" -ForegroundColor Green
-        $device | Add-Member -MemberType NoteProperty -Name Status -Value OFFLINE
+        $device | Add-Member -MemberType NoteProperty -Name Status -Value ONLINE
     }
 
     switch -Wildcard ($device.location)
