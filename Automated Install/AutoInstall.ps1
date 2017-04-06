@@ -56,6 +56,83 @@ function misc
     gpupdate /force
     Write-Host "Done!"
 
+    #Add to WSUS Group
+    Invoke-Command -ComputerName mdlfinance -ScriptBlock
+    {
+    
+        if($strPath -match 'Pharma')
+        {
+            if($strPath -match '1301')
+            {
+                if($strPath -match 'RecOffice')
+                {
+                    $targetGroup = '1301 Receiving'
+                }
+
+                if($strPath -match 'Office')
+                {
+                    $targetGroup = '1301 Corporate'
+                }
+
+                if($strPath -match 'Ops')
+                {
+                    $targetGroup = '1301 Ops'
+                }
+            }
+        
+            if($strPath -match 'Stanley')
+            {
+                if($strPath -match 'Office')
+                {
+                    $targetGroup = '***STANOFFICE***'
+                }
+
+                if($strPath -match 'Ops')
+                {
+                    $targetGroup = '***STANOPS***'
+                }
+
+                if($strPath -match 'Retail')
+                {
+                    $targetGroup = '***STANRETAIL***'
+                }
+
+                if($strPath -match 'RecOffice')
+                {
+                    $targetGroup = '***STANRECOFFICE***'
+                }
+
+                if($strPath -match 'SEKO-Office')
+                {
+                    $targetGroup = '***STANSEKO***'
+                }
+            }
+        }
+
+        if($strPath -match 'Retail')
+        {
+    
+            if($strPath -match 'Office')
+                {
+                    $targetGroup = '700 Office'
+                }
+
+            if($strPath -match 'Ops')
+                {
+                    $targetGroup = '***700OPS***'
+                }
+                 
+            if($strPath -match 'IT')
+                {
+                    $targetGroup = 'IT Department'
+                }
+        }
+
+
+
+    Get-WsusComputer -NameIncludes $env:computername | Add-WsusComputer -TargetGroupName $targetGroup
+    }
+
     Write-Host "Performing windows update..."
     wuauclt /detectnow /reportnow /downloadnow
     wuauclt /detectnow /reportnow /downloadnow
@@ -63,9 +140,7 @@ function misc
 
     Write-Host "Setting default file associations..."
     dism.exe /online /Import-DefaultAppAssociations:$PSScriptRoot\AppAssociations.xml
-    Write-Host "Done!"
-
-    
+    Write-Host "Done!"    
 
     if($Type -Match "EliteBook")
     {
