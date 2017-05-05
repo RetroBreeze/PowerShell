@@ -1,32 +1,11 @@
 ﻿<# Mapped Printer Script created by Shem Gyll #>
 
-$cn = gethostlist
+$cn = Read-Host "Enter computer number"
 $output = ''
 $finLoc = ''
 
-#makes sure RR is not disabled
-#Set-Service -Name RemoteRegistry -StartUpType Automatic
-#Start-Service -Name RemoteRegistry
-
-#basically illegal variable name
 $disconnecteds = @()
 
-<#$spiceLoc = getSpiceData -query "select name,location from devices where type='Computer'"
-$locationArr =@()
-#$locationObj = ''
-
-
-foreach($prop in $spiceLoc)
-{
-        $spiceName = $prop.name
-        $spiceLocation = $prop.location
-
-        $locationObj = New-Object -TypeName psobject
-        $locationObj | Add-Member -MemberType NoteProperty -Name hostName -Value $spiceName
-        $locationObj | Add-Member -MemberType NoteProperty -Name locationName -Value $spiceLocation
-        $locationArr += $locationObj
-}
-#> 
 
 $result = foreach($comp in $cn){
 
@@ -43,23 +22,11 @@ $result = foreach($comp in $cn){
         $disconnecteds += $comp
     }
 
-    #If ping was successful, the script moves on, if not it loops back to the next computer
+ #   #If ping was successful, the script moves on, if not it loops back to the next computer
     if($testnet)
     {
-       # $s = New-PSSession -ComputerName $comp -ErrorAction SilentlyContinue
-        #Invoke-Command -Session $s -ScriptBlock{
-        $spiceLoc = getSpiceData -query "select location from devices where name='$comp'"
-        
-        foreach($prop in $spiceLoc)
-        {
-            $locN = $prop.location
-        }
-
-        #$spiceLocation = $prop.location
 
         Invoke-Command -ComputerName $comp -ErrorAction SilentlyContinue -ScriptBlock {
-
-       # $name = $comp
 
             #gets list of SIDS to recurse through to get the user
             $sids = Get-ChildItem Registry::HKEY_USERS -Exclude ".Default","*Classes*" | Select-Object Name -ExpandProperty Name
