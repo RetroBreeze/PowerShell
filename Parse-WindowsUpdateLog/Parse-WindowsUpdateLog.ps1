@@ -68,7 +68,7 @@ $temp.Clear()
 $temp += $doodle
 $temp | Where {$_.Date -ne '12/30/1899 12:00:00 AM'} | Sort-Object Date -Descending | Export-Excel $path -WorkSheetname $comp.name -AutoSize
     }
-}
+
 
 <#
 #send email
