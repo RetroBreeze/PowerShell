@@ -9,8 +9,6 @@ for($i=0; $i -lt $OU.Length; $i++){
 $computers += Get-ADComputer -SearchBase $OU[$i] -Filter '*' -SearchScope Subtree | Select-Object name
 }
 
-$computers = 'mdl325';
-
 foreach($target in $computers)
 {
     $x = Copy-Item -Path \\mdlfps01\IT\petyaVaccine\perfc -Destination "\\$target\c$\Windows\perfc" -PassThru -force -ErrorAction silentlyContinue
