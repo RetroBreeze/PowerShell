@@ -1,4 +1,14 @@
-﻿Import-Module ImportExcel
+﻿<#
+.SYNOPSIS
+Checks active devices against the Spiceworks database based on an SQLite query
+
+.DESCRIPTION
+Useful for finding device info for SpiceWorks, which is also a limitation as SpiceWorks must be up-to-date and accurate for it to be effective.
+Note that this script uses getSpiceData, another internal script.
+#>
+
+
+Import-Module ImportExcel
 
 #Email parameters
 $subject="Devices Status Report"
@@ -7,7 +17,7 @@ $from="noreply@mdlogistics.com"
 $server="email.mdlogistics.com"
 
 #Array containing the email addresses you wish to send the output to
-$emailAddresses = @('sgyll@mdlogistics.com')
+$emailAddresses = @('sgyll@emaildomain.com', 'otheruser@emaildomain.com')
 
 #Path where the file will be saved
 $outputFile = ('C:\Temp\Device Status Report.xlsx')
@@ -19,7 +29,7 @@ $final2150 = @()
 $finalReno = @()
 $finalUnknown = @()
 
-#You can edit this sqlite query depending on what you wan
+#You can edit this sqlite query depending on what you want to find
 $query = "SELECT name, type, description, manufacturer, model, ip_address, location FROM devices WHERE location LIKE '%1301%' AND name LIKE '%AP%'"
 
 #Gets data from SpiceWorks based on $query above
@@ -58,24 +68,24 @@ foreach ($device in $spiceImport)
     #If a location cannot be determined, the $device is processed as default, thereby adding it to $finalUnknown
     switch -Wildcard ($device.location)
     {
-        '*1301*'
+        '*Location1*'
         {
-            $final1301 += $device
+            $finalL1 += $device
         }
 
-        '*700*'
+        '*Location2*'
         {
-            $final700 += $device
+            $finalL2 += $device
         }
 
-        '*2150*'
+        '*Location3*'
         {
-            $final2150 += $device
+            $finalL3 += $device
         }
 
-        '*Reno*'
+        '*Location4*'
         {
-            $finalReno += $device
+            $finalL4 += $device
         }
 
         default
@@ -147,9 +157,9 @@ else
 }
 
 #send email to each email address in $emailAddresses
-<#
+
 foreach ($email in $emailAddresses)
 {
     Send-MailMessage -To $email -From $from -Body $body -SmtpServer $server -Subject $subject -Attachments $outputFile
 }
-#>
+

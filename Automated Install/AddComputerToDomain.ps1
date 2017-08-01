@@ -1,37 +1,28 @@
-﻿$Type = Get-WmiObject Win32_Computersystem | Select-object Model
+﻿<#
+.SYNOPSIS
+This script will add the local computer to the domain selected in out-gridview.
 
-$name = $env:computername
+.DESCRIPTION
+Domains are hard-coded as strings with friendly names for ease of use. This script is to be used as part of the AutoInstall bundle. Domains have been dummified intentionally for github)
+#>
 
+#Hard-coded array containing list of domains available. First strings are friendly names, second string is the correctly syntaxed OU path.
 $domainList = @{
-#1301 Perry Road
-"1301/Office/Desktops" = "OU=Desktops,OU=Office-Workstations,OU=1301,OU=Shared Pharma,DC=MDL,DC=Local";
-"1301/Ops/Desktops" = "OU=Desktops,OU=Ops-Workstations,OU=1301,OU=Shared Pharma,DC=MDL,DC=Local";
-"1301/Receiving/Desktops" = "OU=Desktops,OU=RecOffice-Workstations,OU=1301,OU=Shared Pharma,DC=MDL,DC=Local";
-"1301/Office/Laptops" = "OU=Laptops,OU=Office-Workstations,OU=1301,OU=Shared Pharma,DC=MDL,DC=Local";
-"1301/Ops/Laptops" = "OU=Laptops,OU=Ops-Workstations,OU=1301,OU=Shared Pharma,DC=MDL,DC=Local";
-"1301/Receiving/Laptops" = "OU=Laptops,OU=RecOffice-Workstations,OU=1301,OU=Shared Pharma,DC=MDL,DC=Local";
+"dummyLocation/OU1/Desktops" = "OU=Desktops,OU=OU1,OU=dummyLocation,DC=Domain,DC=Local";
+"dummyLocation/OU2/Desktops" = "OU=Desktops,OU=OU2,OU=dummyLocation,DC=Domain,DC=Local";
+"dummyLocation/OU3/Desktops" = "OU=Desktops,OU=OU3,OU=dummyLocation,DC=Domain,DC=Local";
+"dummyLocation/OU1/Laptops" = "OU=Laptops,OU=OU1,OU=dummyLocation,DC=Domain,DC=Local";
+"dummyLocation/OU2/Laptops" = "OU=Laptops,OU=OU2,OU=dummyLocation,DC=Domain,DC=Local";
+"dummyLocation/OU3/Laptops" = "OU=Laptops,OU=OU3,OU=dummyLocation,DC=Domain,DC=Local";
 
-#2150 Stanley Road
-"2150/Office/Desktops" = "OU=Desktops,OU=Office-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Ops/Desktops" = "OU=Desktops,OU=Ops-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Receiving/Desktops" = "OU=Desktops,OU=RecOffice-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Retail Ops/Desktops" = "OU=Desktops,OU=Retail-Ops-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Office/Laptops" = "OU=Laptops,OU=Office-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Ops/Laptops" = "OU=Laptops,OU=Ops-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Receiving/Laptops" = "OU=Laptops,OU=RecOffice-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-"2150/Retail Ops/Laptops" = "OU=Laptops,OU=Retail-Ops-Workstations,OU=Stanley,OU=Shared Pharma,DC=MDL,DC=Local";
-
-#700 Perry Road
-"700/Office/Desktops" = "OU=Desktops,OU=Office-Workstations,OU=700,OU=Retail,DC=MDL,DC=Local";
-"700/IT/Desktops" = "OU=Desktops,OU=IT-Workstations,OU=700,OU=Retail,DC=MDL,DC=Local";
-"700/Ops/Desktops" = "OU=Desktops,OU=Ops-Workstations,OU=700,OU=Retail,DC=MDL,DC=Local";
-"700/Office/Laptops" = "OU=Laptops,OU=Office-Workstations,OU=700,OU=Retail,DC=MDL,DC=Local";
-"700/IT/Laptops" = "OU=Laptops,OU=IT-Workstations,OU=700,OU=Retail,DC=MDL,DC=Local";
-"700/Ops/Laptops" = "OU=Laptops,OU=Ops-Workstations,OU=700,OU=Retail,DC=MDL,DC=Local";
 }
 
+#Create a gridview with passthru containing friendly names
 $selectedOU = $domainList.GetEnumerator() | sort -Property name | Out-GridView -Title "Select an OU"  -PassThru
-#$selectedOU = $domainList | Out-GridView -Title "Select an OU"  -PassThru
+
+#Get domain credentials
 $cred = Get-Credential
+
+#Add the computer to the domain
 Add-Computer -DomainName MDL.Local -Credential $cred -OUPath $selectedOU -Restart
 

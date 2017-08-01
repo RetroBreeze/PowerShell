@@ -1,7 +1,11 @@
-﻿$cn = read-host "Enter computer name"
-$output = ''
+﻿<#
+.SYNOPSIS
+Get-Printer, when called on a remote machine using Invoke-Command, does not display mapped printers. This script will
+show all mapped printers for the currently logged in user for the computer specified in $comp
+#>
 
-$result = foreach($comp in $cn){
+$comp = read-host "Enter computer name"
+$output = ''
 
 $testnet = ''
     #Tries to ping the computer, then stores results in variable $testnet
@@ -50,6 +54,5 @@ $testnet = ''
             }
         }
     }
-}
 
-$result
+#output $result
